@@ -14,12 +14,17 @@ void func(int *x, int size);
 void problem1(int x, int &y);
 void problem2(int x);
 void problem3(int x, int y);
-int &problem4();
+int *problem4();
 void printArray (int *arr, int size);
 int* arrayOnHeap (int *size, int *high, int *low);
 void valueInArray (int *num, int size);
 void valueInArrayDouble (double *num, int size);
 int* modifyArraySize (int *array, int *size);
+int hanningWindow11(int arr[], int len, int window);
+int * hanningWindow12(int arr[], int length,int window);
+void func13(int arr[], int length, int high, int low);
+int** func14(int *x, int *y);
+
 
 int main() {
 //Lab 2b: problem 1
@@ -47,11 +52,13 @@ int main() {
 
 //Lab 2b: problem 4
 //*******************************************************************
-	star ();
+	star();
 	cout << "problem #4"<<endl;
-	int *y = &problem4();
+	int *y = problem4();
 	cout << "the value of the parameter is " << y << endl;
 	cout << "the address of the parameter is " << &y << endl;
+
+	//Yes this compiles. No this doesn't work, the pointer contains a different address than the one assigned to it via the return.
 
 //Lab 2b: problem 5
 //*******************************************************************
@@ -108,7 +115,7 @@ int main() {
 		int size2 = 5;
 		int array3 [] = {2,2,3,3,4};
 		printArray(array3,size2);
-		printArray(modifyArraySize (array3, &size2),size2);
+		printArray(modifyArraySize (array3, &size2),size2 -2);
 
 		star();
 		int array4 []= {2,3,4};
@@ -122,11 +129,38 @@ int main() {
 		int array99 [] = {7,7,5,4,4,3,8};
 		int size99 = 7;
 		printArray(array99,size99);
-		printArray(modifyArraySize (array99, &size99), size99);
+		printArray(modifyArraySize (array99, &size99), size99-2);
+
+
+//***********************************************
+		int arr1[] = {3,8,2,5,1,4,6,0,2};
+		cout << "problem 11: " << hanningWindow11(&arr1[0],9,5) << endl;
+
+
+//***********************************************
+		cout << "problem 12: " << endl;
+		hanningWindow12(&arr1[0],9,5);
+
+
+//***********************************************
+		cout << "problem 13: " << endl;
+		printArray(arr1,9);
+		func13(arr1, 9, 8,0);
+
+
+//***********************************************
+		cout << "problem 14: " << endl;
+		int x;
+		int ss;
+
+		int **arr = func14(&x,&ss);
+		for(int j=0; j<x; j++){ // prints the array.
+				for(int i=0; i<ss; i++){
+			cout << arr[j][i];
+		}
+		cout << endl;
+		}
 }
-//******************************************
-
-
 
 //Lab 2b: problem 1
 //*******************************************************************
@@ -189,11 +223,11 @@ void problem3(int x, int y){
 
 //Lab 2b: problem 4
 //*******************************************************************
-int &problem4(){//REVIEW THIS ONE SHAUN!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+int *problem4(){
 	int y = 3;
 	cout << "the value of the parameter is " << y << endl;
 	cout << "the address of the parameter is " << &y << endl;
-	return y;
+	return &y;
 }
 
 // Problem 5.
@@ -206,7 +240,9 @@ void printArray (int *arr, int size)
 {
 	for (int i = 0; i < size; i++)
 	{
-		cout << arr[i]<< ", ";
+		cout << arr[i];
+		if (i<size-1)
+		cout<< ", ";
 	}
 	cout<<endl;
 }
@@ -318,38 +354,91 @@ int* modifyArraySize (int *array, int *size)
 	return arrayNew;
 }
 
+//**********************************************************
+int hanningWindow11(int arr[],int len, int window){
+int length = window/2 + 1;
+int sum = 0;
+int multiplier = 1;
+int index = 0;
+while(multiplier <= length){
+if(multiplier == length){
+sum = multiplier * arr[index] + sum;
+}
+else{
+sum =  (multiplier * arr[0 + index] + multiplier * arr[window - (1 +index)]) + sum;
+}
+multiplier++;
+index++;
+}
+int avg = sum / len;
 
-/*void printArray(int x[], int size){
-	cout<<"{";
-	for (int i = 0; i<size; i++){
-	if(i<size-1)
-		cout<<x[i]<< ",";  //prints each element in the array. except the last element
-	else
-		cout<<x[i]; // prints the last element in the array.
+return avg;
+}
+
+//************************************************************
+int* hanningWindow12(int arr[], int length, int window){
+int filter[length];
+for(int i = 0; i < length; i++){
+if(i < window/2 || length - i <= window/2)
+filter[i] = 0;
+if(i > length - window/2)
+break;
+filter[i + window/2] = hanningWindow11(&arr[i], length, window);
+}
+for(int i = 0; i < 9; i++){
+cout << filter[i] << endl;
+}
+return filter;
+}
+
+
+void func13(int arr[], int length, int high, int low){
+	int rows = high - low;
+	char graph[rows][length];
+	for(int c = high; c>low-1; c--){ // specifies row
+		cout<<c<<":";
+		for(int r = 0; r < rows; r++){ // specifies column
+			if(arr[r] == c){ // prints star when the index number for the element matches the row number.
+				cout << "*"; //
+				break;
+			}
+			else
+				cout << " "; //prints spaces when the element number doesn't match the row number.
+		}
+		cout <<endl;
 	}
-	cout << "}"<< endl;
-}*/
 
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int** func14(int* num1, int* num2){
+	*num1 = rand() % 6 + 5; // determines dimensions of the array
+	*num2 = rand() % 5 + 4; // determines dimensions of the array
+	int **arr = 0;
+	arr = new int *[*num1]; // creates 2d array on the heap.
+	for (int i = 0; i < *num1; i++) {
+		arr[i] = new int[*num2];
+	} //for
+	for(int j = 0; j < *num1; j++){ // sets all elements in the arry to 0
+		for(int k = 0; k < *num2; k++){
+			arr[j][k] = 0;
+		}
+	}
+	int i = 0;
+	int r,c;
+	while(i < 5){
+		r = rand() % *num1;
+		c = rand() % *num2;
+		for(int j = 0; j < *num1; j++){//sets 5 random number pairs(coordinates) to 1 in the 2d array.
+			for(int k = 0; k < *num2; k++){
+				if(r == j && c == k && arr[j][k] != 1){
+					arr[j][k] = 1;
+				}//if
+			}//for
+		}//for
+		i++;
+	}//while
+	return arr;
+	}
 
 
 	void star () {

@@ -21,6 +21,8 @@ void problem7(char *a, char *b, char &c, char *d, char e);
 bool problem8a(int *x, int *y);
 void problem8b();
 
+
+
 int main() {
 //Try on computer problem #1
 //*******************************************************************
