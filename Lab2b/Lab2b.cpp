@@ -10,7 +10,6 @@
 using namespace std;
 void star ();
 void func(int *x, int size);
-//void printArray(int x[], int size);
 void problem1(int x, int &y);
 void problem2(int x);
 void problem3(int x, int y);
@@ -58,7 +57,8 @@ int main() {
 	cout << "the value of the parameter is " << y << endl;
 	cout << "the address of the parameter is " << &y << endl;
 
-	//Yes this compiles. No this doesn't work, the pointer contains a different address than the one assigned to it via the return.
+	//Yes this compiles. No this doesn't work, the pointer contains
+	//a different address than the one assigned to it via the return.
 
 //Lab 2b: problem 5
 //*******************************************************************
@@ -115,7 +115,7 @@ int main() {
 		int size2 = 5;
 		int array3 [] = {2,2,3,3,4};
 		printArray(array3,size2);
-		printArray(modifyArraySize (array3, &size2),size2 -2);
+		printArray(modifyArraySize (array3, &size2),size2-2);
 
 		star();
 		int array4 []= {2,3,4};
@@ -355,43 +355,64 @@ int* modifyArraySize (int *array, int *size)
 }
 
 //**********************************************************
+//**************************************************
+//problem 11
+//takes in an array, length of the array, and the window
+//it returns an int which is the weighted average
 int hanningWindow11(int arr[],int len, int window){
-int length = window/2 + 1;
-int sum = 0;
-int multiplier = 1;
-int index = 0;
-while(multiplier <= length){
-if(multiplier == length){
-sum = multiplier * arr[index] + sum;
-}
-else{
-sum =  (multiplier * arr[0 + index] + multiplier * arr[window - (1 +index)]) + sum;
-}
-multiplier++;
-index++;
-}
-int avg = sum / len;
+	int weight = 0;//this will be used to divide the summ
+	int cap = window/2 +1;
+	for(int i = 1; i <= cap; i++){
+		if(i == cap){
+			weight = weight + i;
+			break;
+		}//for
+		weight = weight + 2 * i;//this for loops finds what to divide sum by
+	}//for
+	int sum = 0;
+	int multiplier = 1;
+	int index = 0;
+	//adds the values in the window
+	while(multiplier <= cap){
+		if(multiplier == cap){
+			sum = multiplier * arr[index] + sum;
+		}
+		else{//if
+			sum =  (multiplier * arr[0 + index] + multiplier * arr[window - (1 +index)]) + sum;
+		}//else
+		multiplier++;
+		index++;
+	}//while
+	int avg = sum / weight;
 
-return avg;
+	return avg;
 }
-
-//************************************************************
+//*******************************************
+//problem 12
+//this function takes in an array, the length of the array, and the window size
+//it returns an array with each element replaced with the weighted average
 int* hanningWindow12(int arr[], int length, int window){
-int filter[length];
-for(int i = 0; i < length; i++){
-if(i < window/2 || length - i <= window/2)
-filter[i] = 0;
-if(i > length - window/2)
-break;
-filter[i + window/2] = hanningWindow11(&arr[i], length, window);
-}
-for(int i = 0; i < 9; i++){
-cout << filter[i] << endl;
-}
-return filter;
+	int filter[length];
+	for(int i = 0; i < length; i++){
+		if(i < window/2 || length - i <= window/2)//this knows where to place the 0s of the array
+			filter[i] = 0;
+		if(i > length - window/2)
+			break;
+		filter[i + window/2] = hanningWindow11(&arr[i], length, window);//sets the element in the array to the approriate value
+	}
+	for(int i = 0; i < 9; i++){
+		cout << filter[i];//prints the array
+	}
+	cout <<endl;
+	return filter;
 }
 
-
+//*************************************************8
+//problem 13
+//takes in an array, the length of the array, the high, the low
+//returns nothing
+//prints a graph with the values of the array printed as a star
+//in the corresponding coordinate
 void func13(int arr[], int length, int high, int low){
 	int rows = high - low;
 	char graph[rows][length];
@@ -409,7 +430,10 @@ void func13(int arr[], int length, int high, int low){
 	}
 
 }
-
+//**********************************************
+//problem 14
+//takes in two pointers
+//returns a 2d array with randoms dimensions
 int** func14(int* num1, int* num2){
 	*num1 = rand() % 6 + 5; // determines dimensions of the array
 	*num2 = rand() % 5 + 4; // determines dimensions of the array
@@ -438,8 +462,7 @@ int** func14(int* num1, int* num2){
 		i++;
 	}//while
 	return arr;
-	}
+}
 
-
-	void star () {
-		cout << "***********************************************" << endl;}
+void star () {
+cout << "***********************************************" << endl;}
